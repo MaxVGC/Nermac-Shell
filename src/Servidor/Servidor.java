@@ -9,6 +9,7 @@ package Servidor;
  *
  * @author carlo
  */
+import Cliente.F_Cliente;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 
 public class Servidor {
 
+    String text;
     String UserClient;
     private Socket socket;
     private ServerSocket serverSocket;
@@ -65,7 +67,7 @@ public class Servidor {
         }
     }
 
-    public void recibirDatos() {
+    public String recibirDatos() {
         String st = "";
         try {
             do {
@@ -75,16 +77,17 @@ public class Servidor {
                     UserClient = d;
                     System.out.println("\nConexión establecida con: " + UserClient + "\n");
                     System.out.print("\n[Servidor] => ");
-//                    return ("\nConexión establecida con: " + UserClient + "\n" + "\n[Servidor] => ");
+
+                    return ("Conexión establecida con: " + UserClient + "\n");
                 } else {
                     mostrarTexto("\n[" + UserClient + "] => " + st);
                     System.out.print("\n[Servidor] => ");
-//                    return ("\n[" + UserClient + "] => " + st + "\n[Servidor] => ");
+                    return ("[" + UserClient + "] => " + st + "\n");
                 }
             } while (!st.equals(COMANDO_TERMINACION));
         } catch (IOException e) {
             cerrarConexion();
-//            return null;
+            return null;
         }
     }
 

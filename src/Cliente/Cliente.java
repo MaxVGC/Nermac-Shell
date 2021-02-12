@@ -125,7 +125,7 @@ public class Cliente {
     public void escribirDatos() {
         String entrada = "";
         while (true) {
-            System.out.print("[Usted] => ");
+            System.out.print("["+username+"] => ");
             entrada = teclado.nextLine();
             if (entrada.length() > 0) {
                 enviar(entrada);
