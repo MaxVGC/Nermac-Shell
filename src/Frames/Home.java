@@ -49,7 +49,7 @@ public class Home extends javax.swing.JFrame implements Runnable {
         cpu.setText(s.Cpu());
         ram.setText(s.Ram());
         hdd.setText(s.Disk());
-        Thread.sleep(1000); //Tarea que consume diez segundos.
+        Thread.sleep(1000);
 
     }
 
@@ -172,7 +172,7 @@ public class Home extends javax.swing.JFrame implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -29,8 +29,21 @@ public class Alerta extends javax.swing.JFrame {
             jLabel1.setIcon(new ImageIcon("src/Img/Error_2.png"));
         } else if (a == 4) {
             jLabel1.setIcon(new ImageIcon("src/Img/Error_3.png"));
+        } else if (a == 5) {
+            jLabel1.setIcon(new ImageIcon("src/Img/Waiting.png"));
+            jLabel2.setVisible(false);
         }
         jLabel2.setIcon(new ImageIcon("src/Img/Close.png"));
+    }
+
+    public void TimeOut() {
+        jLabel1.setIcon(new ImageIcon("src/Img/Error_2.png"));
+        jLabel2.setVisible(true);
+    }
+
+    public void Connected() {
+        jLabel1.setIcon(new ImageIcon("src/Img/Conexion.png"));
+        jLabel2.setVisible(true);
     }
 
     public Alerta() {
@@ -74,43 +87,14 @@ public class Alerta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        this.dispose();          // TODO add your handling code here:
+        dispose();          // TODO add your handling code here:
     }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Alerta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Alerta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Alerta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Alerta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Alerta().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

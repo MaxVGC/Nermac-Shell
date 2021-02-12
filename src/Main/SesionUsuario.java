@@ -24,6 +24,9 @@ public class SesionUsuario implements UserInfo {
         this.passPhrase = passPhrase;
     }
 
+    public SesionUsuario() {
+    }
+
     
  
     public String getPassphrase() {
@@ -49,4 +52,5 @@ public class SesionUsuario implements UserInfo {
     public void showMessage(String arg0) {
         System.out.println("SUserInfo.showMessage()");
     }
+    
 }

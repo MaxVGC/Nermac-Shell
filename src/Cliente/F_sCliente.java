@@ -1,14 +1,16 @@
+package Cliente;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Frames;
-
-import Main.Main;
-import com.jcraft.jsch.JSchException;
+import Cliente.Cliente;
+import Frames.Alerta;
+import Servidor.F_Servidor;
+import Servidor.F_sServidor;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -17,18 +19,26 @@ import javax.swing.ImageIcon;
  *
  * @author carlo
  */
-public class Servidor extends javax.swing.JFrame {
+public class F_sCliente extends javax.swing.JFrame implements Runnable {
+
+    Thread WConnexion;
+    Cliente c = new Cliente();
 
     /**
      * Creates new form Servidor
      */
-    public Servidor() {
+    public F_sCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(38, 34, 33));
         jLabel1.setIcon(new ImageIcon("src/Img/Logo.png"));
         jLabel2.setIcon(new ImageIcon("src/Img/Conectar_in.png"));
         jLabel3.setIcon(new ImageIcon("src/Img/Close.png"));
+    }
+
+    public void Execute() throws IOException {
+        WConnexion = new Thread(this);
+        WConnexion.start();
     }
 
     /**
@@ -46,13 +56,13 @@ public class Servidor extends javax.swing.JFrame {
         jTextFieldRound1 = new jtextfieldround.JTextFieldRound();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jTextFieldRound4 = new jtextfieldround.JTextFieldRound();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMaximumSize(new java.awt.Dimension(300, 500));
+        setMinimumSize(new java.awt.Dimension(300, 500));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(300, 500));
         setResizable(false);
         getContentPane().setLayout(null);
 
@@ -141,6 +151,26 @@ public class Servidor extends javax.swing.JFrame {
         getContentPane().add(jLabel3);
         jLabel3.setBounds(270, 10, 20, 20);
 
+        jTextFieldRound4.setText("Puerto");
+        jTextFieldRound4.setBackground(new java.awt.Color(38, 34, 33));
+        jTextFieldRound4.setCaretColor(new java.awt.Color(255, 255, 255));
+        jTextFieldRound4.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jTextFieldRound4.setDisabledTextColor(new java.awt.Color(255, 0, 0));
+        jTextFieldRound4.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldRound4.setSelectedTextColor(new java.awt.Color(255, 255, 255));
+        jTextFieldRound4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldRound4KeyPressed(evt);
+            }
+        });
+        jTextFieldRound4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextFieldRound4MouseClicked(evt);
+            }
+        });
+        getContentPane().add(jTextFieldRound4);
+        jTextFieldRound4.setBounds(24, 360, 250, 28);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -170,28 +200,15 @@ public class Servidor extends javax.swing.JFrame {
             exe.setVisible(true);
         } else {
             try {
-                Main exe = new Main(jTextFieldRound1.getText(), jTextFieldRound3.getText(), jTextFieldRound2.getText());
-                if (exe.connect(jTextFieldRound1.getText(), jTextFieldRound3.getText(), jTextFieldRound2.getText())) {
-                    Home exe2 = new Home(exe);
-                    exe2.setVisible(true);
-                    Alerta exe1 = new Alerta(2);
-                    exe1.setVisible(true);
-                    this.dispose();
-                } else {
-                    Alerta exe1 = new Alerta(3);
-                    exe1.setVisible(true);
-                }
-            } catch (JSchException ex) {
-                Alerta exe = new Alerta(4);
-                exe.setVisible(true);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                Execute();
+            } catch (Exception e) {
             }
         }
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();
+        c.cerrarConexion();        // TODO add your handling code here:
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jTextFieldRound2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldRound2MouseClicked
@@ -218,39 +235,26 @@ public class Servidor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTextFieldRound3KeyPressed
 
+    private void jTextFieldRound4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldRound4KeyPressed
+        if (jTextFieldRound4.getText().equals("Puerto")) {
+            jTextFieldRound4.setText("");
+        }
+    }//GEN-LAST:event_jTextFieldRound4KeyPressed
+
+    private void jTextFieldRound4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldRound4MouseClicked
+        if (jTextFieldRound4.getText().equals("Puerto")) {
+            jTextFieldRound4.setText("");
+        }
+    }//GEN-LAST:event_jTextFieldRound4MouseClicked
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Servidor().setVisible(true);
-            }
-        });
+        F_sCliente r = new F_sCliente();
+        r.setVisible(true);
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -260,5 +264,29 @@ public class Servidor extends javax.swing.JFrame {
     private jtextfieldround.JTextFieldRound jTextFieldRound1;
     private jtextfieldround.JPasswordFieldRound jTextFieldRound2;
     private jtextfieldround.JTextFieldRound jTextFieldRound3;
+    private jtextfieldround.JTextFieldRound jTextFieldRound4;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        try {
+            Alerta a = new Alerta(5);
+            this.setEnabled(false);
+            a.setVisible(true);
+            if (c.isConnected(jTextFieldRound3.getText(), Integer.parseInt(jTextFieldRound4.getText()))) {
+                System.out.println("entro");
+                a.Connected();
+                dispose();
+                F_Cliente f = new F_Cliente(jTextFieldRound3.getText(), Integer.parseInt(jTextFieldRound4.getText()));
+                f.setVisible(true);
+            } else {
+                a.TimeOut();
+                this.setEnabled(true);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(F_sServidor.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(F_sCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

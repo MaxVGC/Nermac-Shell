@@ -46,7 +46,6 @@ public class Main {
         channelExec = (ChannelExec) session.openChannel("exec");
         
         InputStream in = channelExec.getInputStream();
-        // Para este Ejemplo ejetuamos una sola iteracion del comando TOP de Unix
         channelExec.setCommand(cmd);
         channelExec.connect();
 
