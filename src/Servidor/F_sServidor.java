@@ -9,10 +9,6 @@ import Frames.Alerta;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -25,6 +21,7 @@ public class F_sServidor extends javax.swing.JFrame implements Runnable {
 
     Thread WConnexion;
     Servidor s = new Servidor();
+    String pp=System.getProperty("user.name");
 
     /**
      * Creates new form Servidor
@@ -151,14 +148,16 @@ public class F_sServidor extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jTextFieldRound1MouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        if (jTextFieldRound1.getText().equals("Puerto") || jTextFieldRound1.getText().equals("") || jPasswordFieldRound1.getText().equals("")) {
+        try {
+            if (jTextFieldRound1.getText().equals("Puerto") || jTextFieldRound1.getText().equals("") || jPasswordFieldRound1.getText().equals("") || Integer.parseInt(jTextFieldRound1.getText()) >= 65535 || Integer.parseInt(jTextFieldRound1.getText()) < 0) {
+                Alerta a = new Alerta(1);
+                a.setVisible(true);
+            } else {
+                Execute();
+            }
+        } catch (Exception e) {
             Alerta a = new Alerta(1);
             a.setVisible(true);
-        } else {
-            try {
-                Execute();
-            } catch (IOException ex) {
-            }
         }
     }//GEN-LAST:event_jLabel2MouseClicked
 
@@ -205,10 +204,10 @@ public class F_sServidor extends javax.swing.JFrame implements Runnable {
             Alerta a = new Alerta(5);
             this.setEnabled(false);
             a.setVisible(true);
-            if (s.isConnected(jTextFieldRound1.getText())) {
+            if (s.isConnected(jTextFieldRound1.getText(),pp,jPasswordFieldRound1.getText())) {
                 a.Connected();
                 dispose();
-                F_Servidor f = new F_Servidor(Integer.parseInt(jTextFieldRound1.getText()));
+                F_Servidor f = new F_Servidor(Integer.parseInt(jTextFieldRound1.getText()), jPasswordFieldRound1.getText());
                 f.setVisible(true);
             } else {
                 a.TimeOut();

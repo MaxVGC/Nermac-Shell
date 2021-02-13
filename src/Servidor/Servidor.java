@@ -9,7 +9,6 @@ package Servidor;
  *
  * @author carlo
  */
-import Cliente.F_Cliente;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -27,17 +26,26 @@ public class Servidor {
     Scanner escaner = new Scanner(System.in);
     final String COMANDO_TERMINACION = "salir()";
 
-    public Boolean isConnected(String a) throws IOException {
-
+    public Boolean isConnected(String a, String user, String pass) throws IOException {
         try {
             int puerto = Integer.parseInt(a);
             serverSocket = new ServerSocket(puerto);
             serverSocket.setSoTimeout(60 * 1000);
             socket = serverSocket.accept();
             if (socket.isConnected()) {
-                socket.close();
-                serverSocket.close();
-                return true;
+                flujos();
+                enviar(user + ":" + pass);
+                if (recibirConfirmacion().equals("ready")) {
+                    cerrarConexion(0);
+                    socket.close();
+                    serverSocket.close();
+                    return true;
+                } else {
+                    cerrarConexion(0);
+                    socket.close();
+                    serverSocket.close();
+                    return false;
+                }
             } else {
                 serverSocket.close();
                 socket.close();
@@ -67,18 +75,26 @@ public class Servidor {
         }
     }
 
+    public String recibirConfirmacion() throws IOException {
+        String st = "";
+        st = (String) bufferDeEntrada.readUTF();
+        return st;
+    }
+
     public String recibirDatos() {
         String st = "";
         try {
             do {
                 st = (String) bufferDeEntrada.readUTF();
-                if (st.contains("nick")) {
-                    String d = st.substring(5, 10);
+                if (st.contains("///nick///")) {
+                    String d = st.substring(11, st.length());
                     UserClient = d;
                     System.out.println("\nConexión establecida con: " + UserClient + "\n");
                     System.out.print("\n[Servidor] => ");
-
                     return ("Conexión establecida con: " + UserClient + "\n");
+                } else if (st.equals("salir()")) {
+                    cerrarConexion();
+                    return null;
                 } else {
                     mostrarTexto("\n[" + UserClient + "] => " + st);
                     System.out.print("\n[Servidor] => ");
@@ -86,9 +102,9 @@ public class Servidor {
                 }
             } while (!st.equals(COMANDO_TERMINACION));
         } catch (IOException e) {
-            cerrarConexion();
             return null;
         }
+
     }
 
     public void enviar(String s) {
@@ -111,9 +127,20 @@ public class Servidor {
         }
     }
 
+    public void cerrarConexion(int a) {
+        try {
+            bufferDeEntrada.close();
+            bufferDeSalida.close();
+            socket.close();
+        } catch (IOException e) {
+            mostrarTexto("Excepción en cerrarConexion(): " + e.getMessage());
+        } finally {
+            mostrarTexto("Conversación finalizada....");
+        }
+    }
+
     public void cerrarConexion() {
         try {
-
             bufferDeEntrada.close();
             bufferDeSalida.close();
             socket.close();

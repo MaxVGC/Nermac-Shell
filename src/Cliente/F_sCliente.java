@@ -269,11 +269,11 @@ public class F_sCliente extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
+        Alerta a = new Alerta(5);
+        this.setEnabled(false);
+        a.setVisible(true);
         try {
-            Alerta a = new Alerta(5);
-            this.setEnabled(false);
-            a.setVisible(true);
-            if (c.isConnected(jTextFieldRound3.getText(), Integer.parseInt(jTextFieldRound4.getText()))) {
+            if (c.isConnected(jTextFieldRound3.getText(), Integer.parseInt(jTextFieldRound4.getText()),jTextFieldRound1.getText()+":"+jTextFieldRound2.getText())) {
                 System.out.println("entro");
                 a.Connected();
                 dispose();
@@ -284,7 +284,7 @@ public class F_sCliente extends javax.swing.JFrame implements Runnable {
                 this.setEnabled(true);
             }
         } catch (IOException ex) {
-            Logger.getLogger(F_sServidor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(F_sCliente.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(F_sCliente.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -34,6 +34,7 @@ public class Prueba {
         }else{
             System.out.println("disconnect");
         }
-        
+        String s="nick///:carlo";
+        System.out.println(s.substring(8, s.length() ));
     }
 }

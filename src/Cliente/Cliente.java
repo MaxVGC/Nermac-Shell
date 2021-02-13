@@ -28,13 +28,22 @@ public class Cliente {
         this.username = System.getProperty("user.name");
     }
 
-    public Boolean isConnected(String ip, int puerto) throws IOException, InterruptedException {
+    public Boolean isConnected(String ip, int puerto, String cred) throws IOException, InterruptedException {
         try {
             socket = new Socket(ip, puerto);
             socket.setSoTimeout(10 * 1000);
             if (socket.isConnected()) {
-                socket.close();
-                return true;
+                abrirFlujos();
+                if (recibirCredenciales().equals(cred)) {
+                    enviar("ready");
+                    cerrarConexion(0);
+                    return true;
+                } else {
+                    System.out.println("no paso");
+                    cerrarConexion(0);
+                    return false;
+                }
+
             } else {
                 socket.close();
                 return false;
@@ -47,12 +56,11 @@ public class Cliente {
     }
 
     public void IniciarCliente(String ip, int puerto) throws IOException {
-       
-            socket = new Socket(ip, puerto);
-            mostrarTexto("Conectado a :" + socket.getInetAddress().getHostName());
-            System.out.print("[" + username + "] => ");
-        
-        
+
+        socket = new Socket(ip, puerto);
+        mostrarTexto("Conectado a :" + socket.getInetAddress().getHostName());
+        System.out.print("[" + username + "] => ");
+
     }
 
     public static void mostrarTexto(String s) {
@@ -91,6 +99,18 @@ public class Cliente {
         }
     }
 
+    public void cerrarConexion(int a) {
+        try {
+            bufferDeEntrada.close();
+            bufferDeSalida.close();
+            socket.close();
+            mostrarTexto("Conexión terminada");
+        } catch (IOException e) {
+            mostrarTexto("IOException on cerrarConexion()");
+        } finally {
+        }
+    }
+
     public void ejecutarConexion(String ip, int puerto) {
         Thread hilo = new Thread(new Runnable() {
             @Override
@@ -98,7 +118,7 @@ public class Cliente {
                 try {
                     IniciarCliente(ip, puerto);
                     abrirFlujos();
-                    enviar("nick:" + username);
+                    enviar("///nick///:" + username);
                     recibirDatos();
                 } catch (IOException ex) {
                     Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
@@ -110,22 +130,35 @@ public class Cliente {
         hilo.start();
     }
 
-    public void recibirDatos() {
+    public String recibirDatos() {
         String st = "";
         try {
             do {
-                st = (String) bufferDeEntrada.readUTF();
-                mostrarTexto("\n[Servidor] => " + st);
-                System.out.print("[" + username + "] => ");
+                if (st.equals("salir()")) {
+                    cerrarConexion();
+                    return null;
+                } else {
+                    st = (String) bufferDeEntrada.readUTF();
+                    mostrarTexto("\n[Servidor] => " + st);
+                    System.out.print("[" + username + "] => ");
+                    return "\n[Servidor] => " + st;
+                }
             } while (!st.equals(COMANDO_TERMINACION));
         } catch (IOException e) {
+            return null;
         }
+    }
+
+    public String recibirCredenciales() throws IOException {
+        String st = "";
+        st = (String) bufferDeEntrada.readUTF();
+        return st;
     }
 
     public void escribirDatos() {
         String entrada = "";
         while (true) {
-            System.out.print("["+username+"] => ");
+            System.out.print("[" + username + "] => ");
             entrada = teclado.nextLine();
             if (entrada.length() > 0) {
                 enviar(entrada);

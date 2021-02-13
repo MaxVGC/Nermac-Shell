@@ -5,28 +5,61 @@
  */
 package Servidor;
 
+import Frames.Alerta;
+import Main.Fuentes;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 
 /**
  *
  * @author carlo
  */
 public class F_Servidor extends javax.swing.JFrame {
-    
+
     Servidor s = new Servidor();
+    private Font FP;
+    String pass;
+
     /**
      * Creates new form F_Servidor
      */
-    public F_Servidor(int port) {
+    public F_Servidor(int port, String pass) throws UnknownHostException {
         initComponents();
+        this.pass = pass;
+        FP = Fuentes.setFuente("/Img/ubuntu.ttf", 16f);
+        jLabel1.setIcon(new ImageIcon("src/Img/consola.png"));
+        jLabel2.setIcon(new ImageIcon("src/Img/Barra.gif"));
+        jLabel3.setIcon(new ImageIcon("src/Img/Btn_close.png"));
+        jTextArea1.setFont(FP);
+        jLabel4.setFont(FP);
+        jLabel4.setText("[Server@" + InetAddress.getLocalHost().getHostAddress() + ":" + port + "]");
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
+        jScrollPane1.getViewport().setOpaque(false);
+
         ejecutarConexion(port);
-        s.escribirDatos(); 
+        s.escribirDatos();
     }
-    public void Ordenar(String a){
-        jTextArea1.setText(jTextArea1.getText()+a);
+    int aux = 0;
+
+    public void Ordenar(String a) throws InterruptedException {
+        if (a != null && aux == 0) {
+            jTextArea1.setText(jTextArea1.getText() + a);
+        } else if (aux == 1) {
+            Thread.sleep(5000);
+            System.exit(0);
+        } else {
+            aux = 1;
+            Alerta f = new Alerta(3);
+            f.setVisible(true);
+            this.dispose();
+        }
     }
 
     public void ejecutarConexion(int puerto) {
@@ -37,10 +70,11 @@ public class F_Servidor extends javax.swing.JFrame {
                     s.IniciarServidor(puerto);
                     s.flujos();
                     while (true) {
-//                        jTextArea1.setText(s.recibirDatos()+jTextArea1.getText());
                         Ordenar(s.recibirDatos());
                     }
                 } catch (IOException ex) {
+                    Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
                     Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     //cerrarConexion();
@@ -59,70 +93,104 @@ public class F_Servidor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(38, 34, 33));
+        setMaximumSize(new java.awt.Dimension(1280, 720));
+        setMinimumSize(new java.awt.Dimension(1280, 720));
+        setUndecorated(true);
+        getContentPane().setLayout(null);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jLabel4.setForeground(new java.awt.Color(0, 204, 0));
+        jLabel4.setText("SERVIDOR");
+        getContentPane().add(jLabel4);
+        jLabel4.setBounds(5, 2, 290, 30);
 
-        jTextField1.setText("jTextField1");
-
-        jLabel1.setText("jLabel1");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
+                jLabel3MouseClicked(evt);
             }
         });
+        getContentPane().add(jLabel3);
+        jLabel3.setBounds(1250, 4, 26, 26);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1)))
-                .addContainerGap(10, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addContainerGap())
-        );
+        jTextField1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField1.setBorder(null);
+        jTextField1.setCaretColor(new java.awt.Color(255, 255, 255));
+        jTextField1.setOpaque(false);
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
+        getContentPane().add(jTextField1);
+        jTextField1.setBounds(45, 685, 1230, 30);
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setForeground(new java.awt.Color(0, 0, 0));
+        jScrollPane1.setOpaque(false);
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(new java.awt.Color(66, 40, 63));
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jTextArea1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextArea1.setRows(5);
+        jTextArea1.setBorder(null);
+        jTextArea1.setOpaque(false);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(5, 40, 1270, 640);
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(5, 685, 1270, 30);
+        getContentPane().add(jLabel1);
+        jLabel1.setBounds(0, 0, 1280, 720);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-       
-        jTextArea1.setText(jTextArea1.getText()+"[Servidor] => "+jTextField1.getText()+"\n");
-        s.enviar(jTextField1.getText());
-    }//GEN-LAST:event_jLabel1MouseClicked
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (jTextField1.getText().equals("salir()")) {
+                s.enviar(jTextField1.getText());
+                System.exit(0);
+            } else {
+                jTextArea1.setText(jTextArea1.getText() + "[Servidor] => " + jTextField1.getText() + "\n");
+                s.enviar(jTextField1.getText());
+                jTextField1.setText("");
+                jLabel2.setIcon(new ImageIcon("src/Img/Barra.gif"));
+            }
+        } else {
+            jLabel2.setIcon(new ImageIcon("src/Img/Barra.png"));
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-
+    public static void main(String args[]) throws UnknownHostException {
+        F_Servidor f = new F_Servidor(2020, "");
+        f.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
