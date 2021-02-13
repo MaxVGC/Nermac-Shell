@@ -54,7 +54,7 @@ public class Sistem {
 //        System.out.println("total physical memory : " + physicalMemorySize / mb + "MB ");
         long physicalfreeMemorySize = os.getFreePhysicalMemorySize();
 //        System.out.println("total free physical memory : " + physicalfreeMemorySize / mb + "MB");
-        return (100-(((physicalfreeMemorySize/mb)*100)/(physicalMemorySize / mb)))+"%";
+        return (100 - (((physicalfreeMemorySize / mb) * 100) / (physicalMemorySize / mb))) + "%";
     }
 
     public String Disk() {
@@ -68,7 +68,7 @@ public class Sistem {
 //        System.out.println("Total X partition size : " + totalCapacity1 + "GB");
 //        System.out.println("Free Space in drive C: : " + freePartitionSpace + "GB");
 //        System.out.println("Free Space in drive X:  : " + freePartitionSpace1 + "GB");
-        return (100-(((diskPartition.getFreeSpace() / gb)*100)/(diskPartition.getTotalSpace() / gb)))+"%";
+        return (100 - (((diskPartition.getFreeSpace() / gb) * 100) / (diskPartition.getTotalSpace() / gb))) + "%";
     }
 
     public String Cpu() {
@@ -93,6 +93,6 @@ public class Sistem {
         }
         float cpuPercent = calcCPU(startCPUTime, start, cpuCount);
 //        log("CPU USAGE : " + cpuPercent + " % ");
-        return cpuPercent+"%";
+        return cpuPercent + "%";
     }
 }

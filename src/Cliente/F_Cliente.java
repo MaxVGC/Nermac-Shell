@@ -38,6 +38,10 @@ public class F_Cliente extends javax.swing.JFrame {
     //Cliente c;
     public F_Cliente(String ip, int port) throws UnknownHostException {
         initComponents();
+        jScrollPane1.getViewport().setOpaque(false);
+        cpu_icon.setIcon(new ImageIcon("src/Img/Cpu_icon.png"));
+        ram_icon.setIcon(new ImageIcon("src/Img/Ram_icon.png"));
+        hdd_icon.setIcon(new ImageIcon("src/Img/Hdd_icon.png"));
         FP = Fuentes.setFuente("/Img/ubuntu.ttf", 16f);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -47,9 +51,10 @@ public class F_Cliente extends javax.swing.JFrame {
         jLabel1.setIcon(new ImageIcon("src/Img/consola.png"));
         jLabel2.setIcon(new ImageIcon("src/Img/Barra.gif"));
         jLabel3.setIcon(new ImageIcon("src/Img/Btn_close.png"));
+        jLabel5.setIcon(new ImageIcon("src/Img/Ren_icon.png"));
+
         ejecutarConexion(ip, port);
         c.escribirDatos();
-
     }
     int aux = 0;
 
@@ -73,7 +78,19 @@ public class F_Cliente extends javax.swing.JFrame {
     }
 
     public void Ordenar(String a) throws InterruptedException {
-        if (a != null && aux == 0) {
+        if (a.substring(0, 5).equals("[Rec]")) {
+            String rec = a.substring(5, a.length());
+            String[] aux = rec.split(":");
+            cpu.setText(aux[0]);
+            hdd.setText(aux[1]);
+            ram.setText(aux[2]);
+
+        } else if (aux == 1) {
+            Thread.sleep(5000);
+            System.exit(0);
+        } else if (a != null && aux == 0) {
+
+            jLabel5.setIcon(new ImageIcon("src/Img/Ren_icon.png"));
             String g = jTextPane1.getText();
             final StyleContext cont = StyleContext.getDefaultStyleContext();
             final AttributeSet attrRed = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.RED);
@@ -82,7 +99,6 @@ public class F_Cliente extends javax.swing.JFrame {
             DefaultStyledDocument doc = new DefaultStyledDocument() {
                 public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
                     super.insertString(offset, str, a);
-
                     String text = getText(0, getLength());
                     int before = findLastNonWordChar(text, offset);
                     if (before < 0) {
@@ -94,7 +110,6 @@ public class F_Cliente extends javax.swing.JFrame {
                     while (wordR <= after) {
                         if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
                             if (text.substring(wordL, wordR).matches("(\\W)*(Servidor)")) {
-                                System.out.println("count " + wordL + wordR);
                                 setCharacterAttributes(wordL + 1, wordR - wordL, attrRed, false);
                             } else if (text.substring(wordL, wordR).matches("(\\W)*(" + System.getProperty("user.name") + ")")) {
                                 setCharacterAttributes(wordL + 1, wordR - wordL, attrBlue, false);
@@ -109,14 +124,12 @@ public class F_Cliente extends javax.swing.JFrame {
 
                 public void remove(int offs, int len) throws BadLocationException {
                     super.remove(offs, len);
-
                     String text = getText(0, getLength());
                     int before = findLastNonWordChar(text, offs);
                     if (before < 0) {
                         before = 0;
                     }
                     int after = findFirstNonWordChar(text, offs);
-
                     if (text.substring(before, after).matches("(\\W)*(Servidor|ahh)")) {
                         setCharacterAttributes(before, after - before, attrRed, false);
                     } else if (text.substring(before, after).matches("(\\W)*(" + System.getProperty("user.name") + "|ahh)")) {
@@ -128,9 +141,6 @@ public class F_Cliente extends javax.swing.JFrame {
             };
             jTextPane1.setDocument(doc);
             jTextPane1.setText(g + a);
-        } else if (aux == 1) {
-            Thread.sleep(5000);
-            System.exit(0);
         } else {
             aux = 1;
             Alerta f = new Alerta(3);
@@ -161,6 +171,7 @@ public class F_Cliente extends javax.swing.JFrame {
             }
         });
         hilo.start();
+
     }
 
     /**
@@ -177,6 +188,13 @@ public class F_Cliente extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
         jTextField1 = new javax.swing.JTextField();
+        hdd = new javax.swing.JLabel();
+        ram = new javax.swing.JLabel();
+        cpu = new javax.swing.JLabel();
+        hdd_icon = new javax.swing.JLabel();
+        ram_icon = new javax.swing.JLabel();
+        cpu_icon = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -203,10 +221,13 @@ public class F_Cliente extends javax.swing.JFrame {
         jScrollPane1.setBorder(null);
         jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setOpaque(false);
+        jScrollPane1.setViewport(null);
 
+        jTextPane1.setEditable(false);
         jTextPane1.setBackground(new java.awt.Color(55, 33, 52));
         jTextPane1.setBorder(null);
         jTextPane1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextPane1.setOpaque(false);
         jScrollPane1.setViewportView(jTextPane1);
 
         getContentPane().add(jScrollPane1);
@@ -224,6 +245,47 @@ public class F_Cliente extends javax.swing.JFrame {
         });
         getContentPane().add(jTextField1);
         jTextField1.setBounds(45, 685, 1230, 30);
+
+        hdd.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        hdd.setForeground(new java.awt.Color(0, 0, 0));
+        hdd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        hdd.setText("0");
+        getContentPane().add(hdd);
+        hdd.setBounds(1180, 480, 70, 30);
+
+        ram.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        ram.setForeground(new java.awt.Color(0, 0, 0));
+        ram.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ram.setText("0");
+        getContentPane().add(ram);
+        ram.setBounds(1180, 340, 70, 30);
+
+        cpu.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        cpu.setForeground(new java.awt.Color(0, 0, 0));
+        cpu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cpu.setText("0");
+        getContentPane().add(cpu);
+        cpu.setBounds(1180, 200, 70, 30);
+
+        hdd_icon.setBackground(new java.awt.Color(38, 34, 33));
+        hdd_icon.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        hdd_icon.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(hdd_icon);
+        hdd_icon.setBounds(1160, 420, 110, 110);
+
+        ram_icon.setBackground(new java.awt.Color(38, 34, 33));
+        ram_icon.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        ram_icon.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(ram_icon);
+        ram_icon.setBounds(1160, 280, 110, 110);
+
+        cpu_icon.setBackground(new java.awt.Color(38, 34, 33));
+        cpu_icon.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        cpu_icon.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(cpu_icon);
+        cpu_icon.setBounds(1160, 140, 110, 110);
+        getContentPane().add(jLabel5);
+        jLabel5.setBounds(1210, 60, 71, 50);
         getContentPane().add(jLabel2);
         jLabel2.setBounds(5, 685, 1270, 30);
         getContentPane().add(jLabel1);
@@ -260,12 +322,19 @@ public class F_Cliente extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private static javax.swing.JLabel cpu;
+    private javax.swing.JLabel cpu_icon;
+    private static javax.swing.JLabel hdd;
+    private javax.swing.JLabel hdd_icon;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextPane jTextPane1;
+    private static javax.swing.JLabel ram;
+    private javax.swing.JLabel ram_icon;
     // End of variables declaration//GEN-END:variables
 }

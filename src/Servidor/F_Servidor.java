@@ -7,6 +7,7 @@ package Servidor;
 
 import Frames.Alerta;
 import Main.Fuentes;
+import Main.Sistem;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class F_Servidor extends javax.swing.JFrame {
     Servidor s = new Servidor();
     private Font FP;
     String pass;
+    Sistem cp = new Sistem();
 
     /**
      * Creates new form F_Servidor
@@ -42,7 +44,6 @@ public class F_Servidor extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         jScrollPane1.getViewport().setOpaque(false);
-
         ejecutarConexion(port);
         s.escribirDatos();
     }
@@ -72,16 +73,27 @@ public class F_Servidor extends javax.swing.JFrame {
                     while (true) {
                         Ordenar(s.recibirDatos());
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
                 } finally {
                     //cerrarConexion();
                 }
             }
         });
         hilo.start();
+        Thread hilo2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                        s.enviar("[Rec]" + cp.Cpu() + ":" + cp.Disk() + ":" + cp.Ram()+":");
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        hilo2.start();
     }
 
     /**

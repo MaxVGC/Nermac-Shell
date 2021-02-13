@@ -128,20 +128,27 @@ public class Cliente {
             }
         });
         hilo.start();
+
     }
 
     public String recibirDatos() {
         String st = "";
         try {
             do {
-                if (st.equals("salir()")) {
-                    cerrarConexion();
-                    return null;
+                st = (String) bufferDeEntrada.readUTF();
+                if (st != "") {
+                    if (st.equals("salir()")) {
+                        cerrarConexion();
+                        return null;
+                    } else if (st.contains("[Rec]")) {
+                        return st;
+                    } else {
+                        mostrarTexto("\n[Servidor] => " + st);
+                        System.out.print("[" + username + "] => ");
+                        return "\n[Servidor] => " + st;
+                    }
                 } else {
-                    st = (String) bufferDeEntrada.readUTF();
-                    mostrarTexto("\n[Servidor] => " + st);
-                    System.out.print("[" + username + "] => ");
-                    return "\n[Servidor] => " + st;
+                    return "";
                 }
             } while (!st.equals(COMANDO_TERMINACION));
         } catch (IOException e) {
@@ -166,21 +173,4 @@ public class Cliente {
         }
     }
 
-    public static void main(String[] argumentos) {
-        Cliente cliente = new Cliente();
-        Scanner escaner = new Scanner(System.in);
-        mostrarTexto("Ingresa la IP: [localhost por defecto] ");
-        String ip = escaner.nextLine();
-        if (ip.length() <= 0) {
-            ip = "localhost";
-        }
-
-        mostrarTexto("Puerto: [5050 por defecto] ");
-        String puerto = escaner.nextLine();
-        if (puerto.length() <= 0) {
-            puerto = "5050";
-        }
-        cliente.ejecutarConexion(ip, Integer.parseInt(puerto));
-        cliente.escribirDatos();
-    }
 }

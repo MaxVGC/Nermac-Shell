@@ -81,6 +81,32 @@ public class Servidor {
         return st;
     }
 
+    public String cmd(String command) {
+        try {
+            String aux = "    ";
+            Process p = Runtime.getRuntime().exec("cmd.exe /c " + command);
+
+            InputStream s = p.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(s, "UTF-8"));
+            if (in.readLine() == null) {
+                enviar("No se pudo ejecutar el comando '" + command + "'");
+                return "No se pudo ejecutar el comando '" + command + "'";
+            } else {
+                String temp;
+                while ((temp = in.readLine()) != null) {
+                    aux = aux + "\n    " + temp;
+                    //System.out.println(temp);
+                }
+                enviar(aux);
+                return aux;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+            enviar("No se pudo ejecutar el comando '" + command + "'");
+            return "No se pudo ejecutar el comando '" + command + "'";
+        }
+    }
+
     public String recibirDatos() {
         String st = "";
         try {
@@ -92,6 +118,8 @@ public class Servidor {
                     System.out.println("\nConexión establecida con: " + UserClient + "\n");
                     System.out.print("\n[Servidor] => ");
                     return ("Conexión establecida con: " + UserClient + "\n");
+                } else if (st.substring(0, 3).equals("cmd")) {
+                    return cmd(st.substring(4, st.length())) + "\n";
                 } else if (st.equals("salir()")) {
                     cerrarConexion();
                     return null;
@@ -172,16 +200,4 @@ public class Servidor {
         hilo.start();
     }
 
-    public static void main(String[] args) throws IOException {
-        Servidor s = new Servidor();
-        Scanner sc = new Scanner(System.in);
-
-        mostrarTexto("Ingresa el puerto [5050 por defecto]: ");
-        String puerto = sc.nextLine();
-        if (puerto.length() <= 0) {
-            puerto = "5050";
-        }
-        s.ejecutarConexion(Integer.parseInt(puerto));
-        s.escribirDatos();
-    }
 }

@@ -5,36 +5,19 @@
  */
 package Pruebas;
 
-import Main.SesionUsuario;
-import java.io.DataInputStream;
+import com.jcraft.jsch.JSchException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 public class Prueba {
 
-    public static void main(String[] args) throws  IOException {    
-      Socket socket = new Socket();
-        InetAddress inetAddress = InetAddress.getLocalHost();
-        int puerto = 2020;
-        SocketAddress socketAddress = new InetSocketAddress(inetAddress, puerto);
-        System.out.println(inetAddress.getHostAddress());
-        System.out.println("d "+socketAddress.toString());
-        socket.bind(socketAddress);
-        int timeout = 10000;
-        System.getProperty("user.name");
+    public static void main(String[] args) throws IOException, JSchException {
+        
+        String g="[Rec]dsada";
 
-        socket.connect(socketAddress, timeout);
-        System.out.println("Dirección Inet:" + socket.getInetAddress());
-        System.out.println("Número de puerto:" + socket.getLocalPort());
-        SesionUsuario n=new SesionUsuario();
-        System.out.println("pass: "+n.getPassword());
-        if(socket.isConnected()){
-            System.out.println("connect");
-        }else{
-            System.out.println("disconnect");
-        }
-        String s="nick///:carlo";
-        System.out.println(s.substring(8, s.length() ));
+        System.out.println(g.substring(5,g.length()));
     }
 }
