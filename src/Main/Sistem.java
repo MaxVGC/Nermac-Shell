@@ -41,8 +41,6 @@ public class Sistem {
         long end = System.nanoTime();
         long totalAvailCPUTime = cpuCount * (end - elapsedStartTime);
         long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() - cpuStartTime;
-        //log("Total CPU Time:" + totalUsedCPUTime + " ns.");
-        //log("Total Avail CPU Time:" + totalAvailCPUTime + " ns.");
         float per = ((float) totalUsedCPUTime * 100) / (float) totalAvailCPUTime;
         log(per);
         return (int) per;
@@ -51,23 +49,14 @@ public class Sistem {
     public String Ram() {
         com.sun.management.OperatingSystemMXBean os = (com.sun.management.OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean();
         long physicalMemorySize = os.getTotalPhysicalMemorySize();
-//        System.out.println("total physical memory : " + physicalMemorySize / mb + "MB ");
         long physicalfreeMemorySize = os.getFreePhysicalMemorySize();
-//        System.out.println("total free physical memory : " + physicalfreeMemorySize / mb + "MB");
         return (100 - (((physicalfreeMemorySize / mb) * 100) / (physicalMemorySize / mb))) + "%";
     }
 
     public String Disk() {
         File diskPartition = new File("C:");
-        File diskPartition1 = new File("X:");
-        long totalCapacity = diskPartition.getTotalSpace() / gb;
-        long totalCapacity1 = diskPartition1.getTotalSpace() / gb;
-        double freePartitionSpace = diskPartition.getFreeSpace() / gb;
-        double freePartitionSpace1 = diskPartition1.getFreeSpace() / gb;
-//        System.out.println("Total C partition size : " + totalCapacity + "GB");
-//        System.out.println("Total X partition size : " + totalCapacity1 + "GB");
-//        System.out.println("Free Space in drive C: : " + freePartitionSpace + "GB");
-//        System.out.println("Free Space in drive X:  : " + freePartitionSpace1 + "GB");
+        
+//       
         return (100 - (((diskPartition.getFreeSpace() / gb) * 100) / (diskPartition.getTotalSpace() / gb))) + "%";
     }
 

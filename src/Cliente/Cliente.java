@@ -30,11 +30,13 @@ public class Cliente {
 
     public Boolean isConnected(String ip, int puerto, String cred) throws IOException, InterruptedException {
         try {
+            System.out.println(ip+puerto);
             socket = new Socket(ip, puerto);
             socket.setSoTimeout(10 * 1000);
             if (socket.isConnected()) {
                 abrirFlujos();
                 if (recibirCredenciales().equals(cred)) {
+                    System.out.println("entre");
                     enviar("ready");
                     cerrarConexion(0);
                     return true;

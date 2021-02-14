@@ -78,6 +78,7 @@ public class Servidor {
     public String recibirConfirmacion() throws IOException {
         String st = "";
         st = (String) bufferDeEntrada.readUTF();
+        System.out.println(st);
         return st;
     }
 

@@ -221,7 +221,6 @@ public class F_Cliente extends javax.swing.JFrame {
         jScrollPane1.setBorder(null);
         jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setOpaque(false);
-        jScrollPane1.setViewport(null);
 
         jTextPane1.setEditable(false);
         jTextPane1.setBackground(new java.awt.Color(55, 33, 52));
