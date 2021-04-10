@@ -27,35 +27,31 @@ public class Servidor {
     final String COMANDO_TERMINACION = "salir()";
 
     public Boolean isConnected(String a, String user, String pass) throws IOException {
-        try {
-            int puerto = Integer.parseInt(a);
-            serverSocket = new ServerSocket(puerto);
-            serverSocket.setSoTimeout(60 * 1000);
-            socket = serverSocket.accept();
-            if (socket.isConnected()) {
-                flujos();
-                enviar(user + ":" + pass);
-                if (recibirConfirmacion().equals("ready")) {
-                    cerrarConexion(0);
-                    socket.close();
-                    serverSocket.close();
-                    return true;
-                } else {
-                    cerrarConexion(0);
-                    socket.close();
-                    serverSocket.close();
-                    return false;
-                }
-            } else {
-                serverSocket.close();
+
+        int puerto = Integer.parseInt(a);
+        serverSocket = new ServerSocket(puerto);
+        serverSocket.setSoTimeout(60 * 1000);
+        socket = serverSocket.accept();
+        if (socket.isConnected()) {
+            flujos();
+            enviar(user + ":" + pass);
+            if (recibirConfirmacion().equals("ready")) {
+                cerrarConexion(0);
                 socket.close();
+                serverSocket.close();
+                return true;
+            } else {
+                cerrarConexion(0);
+                socket.close();
+                serverSocket.close();
                 return false;
             }
-        } catch (Exception e) {
-            socket.close();
+        } else {
             serverSocket.close();
+            socket.close();
             return false;
         }
+
     }
 
     public void IniciarServidor(int puerto) throws IOException {

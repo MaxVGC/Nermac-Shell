@@ -62,13 +62,9 @@ public class Sistem {
 
     public String Cpu() {
         long start = System.nanoTime();
-        // log(start);
-        //number of available processors;
         int cpuCount = ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors();
         Random random = new Random(start);
         int seed = Math.abs(random.nextInt());
-//        log("\n \n CPU USAGE DETAILS \n\n");
-//        log("Starting Test with " + cpuCount + " CPUs and random number:" + seed);
         int primes = 10000;
         //
         long startCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
@@ -81,7 +77,6 @@ public class Sistem {
 
         }
         float cpuPercent = calcCPU(startCPUTime, start, cpuCount);
-//        log("CPU USAGE : " + cpuPercent + " % ");
         return cpuPercent + "%";
     }
 }

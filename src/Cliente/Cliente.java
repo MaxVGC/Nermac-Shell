@@ -81,6 +81,11 @@ public class Cliente {
 
     public void enviar(String s) {
         try {
+            System.out.println("antes "+s.length());
+            if(s.length() <=3 || s.isEmpty()){
+                s=s+"      ";
+                System.out.println("despues "+s.length());
+            }
             bufferDeSalida.writeUTF(s);
             bufferDeSalida.flush();
         } catch (IOException e) {
