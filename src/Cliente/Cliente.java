@@ -9,6 +9,7 @@ package Cliente;
  *
  * @author carlo
  */
+import Main.Cypher;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -84,7 +85,6 @@ public class Cliente {
             System.out.println("antes "+s.length());
             if(s.length() <=3 || s.isEmpty()){
                 s=s+"      ";
-                System.out.println("despues "+s.length());
             }
             bufferDeSalida.writeUTF(s);
             bufferDeSalida.flush();
@@ -163,10 +163,14 @@ public class Cliente {
         }
     }
 
-    public String recibirCredenciales() throws IOException {
+    public String recibirCredenciales() throws IOException, Exception {
+        Cypher n=new Cypher();
         String st = "";
         st = (String) bufferDeEntrada.readUTF();
-        return st;
+        System.out.println("st "+st);
+        String[] aux=st.split(":");
+        System.out.println(n.decrypt(aux[0])+n.decrypt(aux[1]));
+        return n.decrypt(aux[0])+":"+n.decrypt(aux[1]);
     }
 
     public void escribirDatos() {
