@@ -246,21 +246,18 @@ public class F_Cliente extends javax.swing.JFrame {
         jTextField1.setBounds(45, 685, 1230, 30);
 
         hdd.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
-        hdd.setForeground(new java.awt.Color(0, 0, 0));
         hdd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         hdd.setText("0");
         getContentPane().add(hdd);
         hdd.setBounds(1180, 480, 70, 30);
 
         ram.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
-        ram.setForeground(new java.awt.Color(0, 0, 0));
         ram.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ram.setText("0");
         getContentPane().add(ram);
         ram.setBounds(1180, 340, 70, 30);
 
         cpu.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
-        cpu.setForeground(new java.awt.Color(0, 0, 0));
         cpu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         cpu.setText("0");
         getContentPane().add(cpu);

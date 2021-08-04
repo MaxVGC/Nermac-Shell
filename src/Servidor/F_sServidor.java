@@ -124,7 +124,11 @@ public class F_sServidor extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        s.cerrarConexion();
+        try {
+            s.CerrarDatos();
+        } catch (IOException ex) {
+            Logger.getLogger(F_sServidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.exit(0);
     }//GEN-LAST:event_jLabel3MouseClicked
 
@@ -214,6 +218,8 @@ public class F_sServidor extends javax.swing.JFrame implements Runnable {
                 this.setEnabled(true);
             }
         } catch (IOException ex) {
+            Logger.getLogger(F_sServidor.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(F_sServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

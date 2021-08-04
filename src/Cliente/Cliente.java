@@ -9,7 +9,7 @@ package Cliente;
  *
  * @author carlo
  */
-import Main.Cypher;
+import Main.Cifrador;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -46,7 +46,6 @@ public class Cliente {
                     cerrarConexion(0);
                     return false;
                 }
-
             } else {
                 socket.close();
                 return false;
@@ -164,13 +163,13 @@ public class Cliente {
     }
 
     public String recibirCredenciales() throws IOException, Exception {
-        Cypher n=new Cypher();
+        Cifrador n=new Cifrador();
         String st = "";
         st = (String) bufferDeEntrada.readUTF();
         System.out.println("st "+st);
         String[] aux=st.split(":");
-        System.out.println(n.decrypt(aux[0])+n.decrypt(aux[1]));
-        return n.decrypt(aux[0])+":"+n.decrypt(aux[1]);
+        System.out.println(n.desencriptar(aux[0])+n.desencriptar(aux[1]));
+        return n.desencriptar(aux[0])+":"+n.desencriptar(aux[1]);
     }
 
     public void escribirDatos() {

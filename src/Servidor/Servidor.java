@@ -9,174 +9,137 @@ package Servidor;
  *
  * @author carlo
  */
-import Main.Cypher;
+import Main.Cifrador;
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Servidor {
 
-    String text;
-    String UserClient;
-    private Socket socket;
-    private ServerSocket serverSocket;
-    private DataInputStream bufferDeEntrada = null;
-    private DataOutputStream bufferDeSalida = null;
-    Scanner escaner = new Scanner(System.in);
-    final String COMANDO_TERMINACION = "salir()";
+    String Cliente;
+    Socket Socket;
+    ServerSocket SSocket;
+    DataInputStream DatosIn = null;
+    DataOutputStream DatosOut = null;
+    String Salir = "salir()";
 
     public Boolean isConnected(String a, String user, String pass) throws IOException, Exception {
-
         int puerto = Integer.parseInt(a);
-        serverSocket = new ServerSocket(puerto);
-        serverSocket.setSoTimeout(60 * 1000);
-        socket = serverSocket.accept();
-        if (socket.isConnected()) {
-            flujos();
-            Cypher n = new Cypher();
-            enviar(n.encript(user)+":" + n.encript(pass));
-            if (recibirConfirmacion().equals("ready")) {
-                cerrarConexion(0);
-                socket.close();
-                serverSocket.close();
+        SSocket = new ServerSocket(puerto);
+        SSocket.setSoTimeout(60 * 1000);
+        Socket = SSocket.accept();
+        if (Socket.isConnected()) {
+            AbrirDatos();
+            Cifrador n = new Cifrador();
+            EnviarDatos(n.encriptar(user)+":" + n.encriptar(pass));
+            if (RecibirConfirmacion().equals("ready")) {
+                Servidor.this.CerrarDatos(0);
+                Socket.close();
+                SSocket.close();
                 return true;
             } else {
-                cerrarConexion(0);
-                socket.close();
-                serverSocket.close();
+                Servidor.this.CerrarDatos(0);
+                Socket.close();
+                SSocket.close();
                 return false;
             }
         } else {
-            serverSocket.close();
-            socket.close();
+            SSocket.close();
+            Socket.close();
             return false;
         }
-
     }
 
     public void IniciarServidor(int puerto) throws IOException {
-        serverSocket = new ServerSocket(puerto);
-        mostrarTexto("Esperando conexión entrante en el puerto " + String.valueOf(puerto) + "...");
-        socket = serverSocket.accept();
-        mostrarTexto("Conexión establecida con: " + socket.getInetAddress().getHostName() + "\n\n\n");
+        SSocket = new ServerSocket(puerto);
+        Socket = SSocket.accept();
+        Consola("Conexión establecida con: " + Socket.getInetAddress().getHostName() + "\n\n\n");
     }
 
-    public void flujos() {
-        try {
-            bufferDeEntrada = new DataInputStream(socket.getInputStream());
-            bufferDeSalida = new DataOutputStream(socket.getOutputStream());
-            bufferDeSalida.flush();
-        } catch (IOException e) {
-            mostrarTexto("Error en la apertura de flujos");
-        }
+    public void AbrirDatos() throws IOException {
+        DatosIn = new DataInputStream(Socket.getInputStream());
+        DatosOut = new DataOutputStream(Socket.getOutputStream());
+        DatosOut.flush();
     }
 
-    public String recibirConfirmacion() throws IOException {
+    public String RecibirConfirmacion() throws IOException {
         String st = "";
-        st = (String) bufferDeEntrada.readUTF();
+        st = (String) DatosIn.readUTF();
         System.out.println(st);
         return st;
     }
 
-    public String cmd(String command) {
+    public String Cmd(String command) throws IOException {
         try {
             String aux = "    ";
             Process p = Runtime.getRuntime().exec("cmd.exe /c " + command);
-
             InputStream s = p.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(s, "UTF-8"));
             if (in.readLine() == null) {
-                enviar("No se pudo ejecutar el comando '" + command + "'");
+                EnviarDatos("No se pudo ejecutar el comando '" + command + "'");
                 return "No se pudo ejecutar el comando '" + command + "'";
             } else {
                 String temp;
                 while ((temp = in.readLine()) != null) {
                     aux = aux + "\n    " + temp;
-                    //System.out.println(temp);
                 }
-                enviar(aux);
+                EnviarDatos(aux);
                 return aux;
             }
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
-            enviar("No se pudo ejecutar el comando '" + command + "'");
+            EnviarDatos("No se pudo ejecutar el comando '" + command + "'");
             return "No se pudo ejecutar el comando '" + command + "'";
         }
     }
 
-    public String recibirDatos() {
+    public String RecibirDatos() {
         String st = "";
         try {
             do {
-                st = (String) bufferDeEntrada.readUTF();
+                st = (String) DatosIn.readUTF();
                 if (st.contains("///nick///")) {
                     String d = st.substring(11, st.length());
-                    UserClient = d;
-                    System.out.println("\nConexión establecida con: " + UserClient + "\n");
+                    Cliente = d;
+                    System.out.println("\nConexión establecida con: " + Cliente + "\n");
                     System.out.print("\n[Servidor] => ");
-                    return ("Conexión establecida con: " + UserClient + "\n");
+                    return ("Conexión establecida con: " + Cliente + "\n");
                 } else if (st.substring(0, 3).equals("cmd")) {
-                    return cmd(st.substring(4, st.length())) + "\n";
+                    return Cmd(st.substring(4, st.length())) + "\n";
                 } else if (st.equals("salir()")) {
-                    cerrarConexion();
+                    CerrarDatos();
                     return null;
                 } else {
-                    mostrarTexto("\n[" + UserClient + "] => " + st);
+                    Consola("\n[" + Cliente + "] => " + st);
                     System.out.print("\n[Servidor] => ");
-                    return ("[" + UserClient + "] => " + st + "\n");
+                    return ("[" + Cliente + "] => " + st + "\n");
                 }
-            } while (!st.equals(COMANDO_TERMINACION));
+            } while (!st.equals(Salir));
         } catch (IOException e) {
             return null;
         }
-
     }
 
-    public void enviar(String s) {
-        try {
-            bufferDeSalida.writeUTF(s);
-            bufferDeSalida.flush();
-        } catch (IOException e) {
-            mostrarTexto("Error en enviar(): " + e.getMessage());
-        }
+    public void EnviarDatos(String s) throws IOException {
+            DatosOut.writeUTF(s);
+            DatosOut.flush();
     }
 
-    public static void mostrarTexto(String s) {
+    public static void Consola(String s) {
         System.out.print(s);
     }
 
-    public void escribirDatos() {
-        while (true) {
-            System.out.print("[Servidor] => ");
-            enviar(escaner.nextLine());
-        }
+    public void CerrarDatos(int a) throws IOException {
+            DatosIn.close();
+            DatosOut.close();
+            Socket.close();
     }
 
-    public void cerrarConexion(int a) {
-        try {
-            bufferDeEntrada.close();
-            bufferDeSalida.close();
-            socket.close();
-        } catch (IOException e) {
-            mostrarTexto("Excepción en cerrarConexion(): " + e.getMessage());
-        } finally {
-            mostrarTexto("Conversación finalizada....");
-        }
-    }
-
-    public void cerrarConexion() {
-        try {
-            bufferDeEntrada.close();
-            bufferDeSalida.close();
-            socket.close();
-        } catch (IOException e) {
-            mostrarTexto("Excepción en cerrarConexion(): " + e.getMessage());
-        } finally {
-            mostrarTexto("Conversación finalizada....");
-            System.exit(0);
-        }
+    public void CerrarDatos() throws IOException {
+            DatosIn.close();
+            DatosOut.close();
+            Socket.close();
     }
 
     public void ejecutarConexion(int puerto) {
@@ -186,12 +149,16 @@ public class Servidor {
                 while (true) {
                     try {
                         IniciarServidor(puerto);
-                        flujos();
-                        recibirDatos();
+                        AbrirDatos();
+                        RecibirDatos();
                     } catch (IOException ex) {
                         Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
                     } finally {
-                        cerrarConexion();
+                        try {
+                            CerrarDatos();
+                        } catch (IOException ex) {
+                            System.exit(0);
+                        }
                     }
                 }
             }

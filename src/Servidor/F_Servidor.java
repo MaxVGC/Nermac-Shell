@@ -45,7 +45,6 @@ public class F_Servidor extends javax.swing.JFrame {
         this.setVisible(true);
         jScrollPane1.getViewport().setOpaque(false);
         ejecutarConexion(port);
-        s.escribirDatos();
     }
     int aux = 0;
 
@@ -69,9 +68,9 @@ public class F_Servidor extends javax.swing.JFrame {
             public void run() {
                 try {
                     s.IniciarServidor(puerto);
-                    s.flujos();
+                    s.AbrirDatos();
                     while (true) {
-                        Ordenar(s.recibirDatos());
+                        Ordenar(s.RecibirDatos());
                     }
                 } catch (Exception e) {
                 } finally {
@@ -86,8 +85,10 @@ public class F_Servidor extends javax.swing.JFrame {
                 while (true) {
                     try {
                         Thread.sleep(1000);
-                        s.enviar("[Rec]" + cp.Cpu() + ":" + cp.Disk() + ":" + cp.Ram()+":");
+                        s.EnviarDatos("[Rec]" + cp.Cpu() + ":" + cp.Disk() + ":" + cp.Ram()+":");
                     } catch (InterruptedException ex) {
+                        Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
                         Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -147,7 +148,6 @@ public class F_Servidor extends javax.swing.JFrame {
         jTextField1.setBounds(45, 685, 1230, 30);
 
         jScrollPane1.setBorder(null);
-        jScrollPane1.setForeground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setOpaque(false);
 
         jTextArea1.setEditable(false);
@@ -173,11 +173,19 @@ public class F_Servidor extends javax.swing.JFrame {
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (jTextField1.getText().equals("salir()")) {
-                s.enviar(jTextField1.getText());
+                try {
+                    s.EnviarDatos(jTextField1.getText());
+                } catch (IOException ex) {
+                    Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 System.exit(0);
             } else {
                 jTextArea1.setText(jTextArea1.getText() + "[Servidor] => " + jTextField1.getText() + "\n");
-                s.enviar(jTextField1.getText());
+                try {
+                    s.EnviarDatos(jTextField1.getText());
+                } catch (IOException ex) {
+                    Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 jTextField1.setText("");
                 jLabel2.setIcon(new ImageIcon("src/Img/Barra.gif"));
             }
