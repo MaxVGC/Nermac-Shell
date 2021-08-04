@@ -9,6 +9,7 @@ package Servidor;
  *
  * @author carlo
  */
+import Main.Cypher;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -26,7 +27,7 @@ public class Servidor {
     Scanner escaner = new Scanner(System.in);
     final String COMANDO_TERMINACION = "salir()";
 
-    public Boolean isConnected(String a, String user, String pass) throws IOException {
+    public Boolean isConnected(String a, String user, String pass) throws IOException, Exception {
 
         int puerto = Integer.parseInt(a);
         serverSocket = new ServerSocket(puerto);
@@ -34,7 +35,8 @@ public class Servidor {
         socket = serverSocket.accept();
         if (socket.isConnected()) {
             flujos();
-            enviar(user + ":" + pass);
+            Cypher n = new Cypher();
+            enviar(n.encript(user)+":" + n.encript(pass));
             if (recibirConfirmacion().equals("ready")) {
                 cerrarConexion(0);
                 socket.close();
