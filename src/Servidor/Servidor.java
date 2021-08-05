@@ -142,7 +142,7 @@ public class Servidor {
             Socket.close();
     }
 
-    public void ejecutarConexion(int puerto) {
+    public void Iniciar(int puerto) {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {

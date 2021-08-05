@@ -12,42 +12,40 @@ package Cliente;
 import Main.Cifrador;
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Cliente {
 
-    static String username;
-    private Socket socket;
-    private DataInputStream bufferDeEntrada = null;
-    private DataOutputStream bufferDeSalida = null;
-    Scanner teclado = new Scanner(System.in);
-    final String COMANDO_TERMINACION = "salir()";
+    static String Usuario;
+    Socket Socket;
+    DataInputStream DatosIn = null;
+    DataOutputStream DatosOut = null;
+    String Salir = "salir()";
 
     public Cliente() {
-        this.username = System.getProperty("user.name");
+        this.Usuario = System.getProperty("user.name");
     }
 
     public Boolean isConnected(String ip, int puerto, String cred) throws IOException, InterruptedException {
         try {
-            System.out.println(ip+puerto);
-            socket = new Socket(ip, puerto);
-            socket.setSoTimeout(10 * 1000);
-            if (socket.isConnected()) {
-                abrirFlujos();
-                if (recibirCredenciales().equals(cred)) {
+            System.out.println(ip + puerto);
+            Socket = new Socket(ip, puerto);
+            Socket.setSoTimeout(10 * 1000);
+            if (Socket.isConnected()) {
+                AbrirDatos();
+                if (Credenciales().equals(cred)) {
                     System.out.println("entre");
-                    enviar("ready");
-                    cerrarConexion(0);
+                    EnviarDatos("ready");
+                    CerrarDatos(0);
                     return true;
                 } else {
                     System.out.println("no paso");
-                    cerrarConexion(0);
+                    CerrarDatos(0);
                     return false;
                 }
             } else {
-                socket.close();
+                Socket.close();
                 return false;
             }
         } catch (Exception e) {
@@ -58,63 +56,39 @@ public class Cliente {
     }
 
     public void IniciarCliente(String ip, int puerto) throws IOException {
-
-        socket = new Socket(ip, puerto);
-        mostrarTexto("Conectado a :" + socket.getInetAddress().getHostName());
-        System.out.print("[" + username + "] => ");
-
+        Socket = new Socket(ip, puerto);
+        Consola("Conectado a :" + Socket.getInetAddress().getHostName());
     }
 
-    public static void mostrarTexto(String s) {
+    public static void Consola(String s) {
         System.out.println(s);
     }
 
-    public void abrirFlujos() {
-        try {
-            bufferDeEntrada = new DataInputStream(socket.getInputStream());
-            bufferDeSalida = new DataOutputStream(socket.getOutputStream());
-            bufferDeSalida.flush();
-        } catch (IOException e) {
-            mostrarTexto("Error en la apertura de flujos");
-        }
+    public void AbrirDatos() throws IOException {
+        DatosIn = new DataInputStream(Socket.getInputStream());
+        DatosOut = new DataOutputStream(Socket.getOutputStream());
+        DatosOut.flush();
     }
 
-    public void enviar(String s) {
-        try {
-            System.out.println("antes "+s.length());
-            if(s.length() <=3 || s.isEmpty()){
-                s=s+"      ";
-            }
-            bufferDeSalida.writeUTF(s);
-            bufferDeSalida.flush();
-        } catch (IOException e) {
-            mostrarTexto("IOException on enviar");
+    public void EnviarDatos(String s) throws IOException {
+        System.out.println("antes " + s.length());
+        if (s.length() <= 3 || s.isEmpty()) {
+            s = s + "      ";
         }
+        DatosOut.writeUTF(s);
+        DatosOut.flush();
     }
 
-    public void cerrarConexion() {
-        try {
-            bufferDeEntrada.close();
-            bufferDeSalida.close();
-            socket.close();
-            mostrarTexto("Conexión terminada");
-        } catch (IOException e) {
-            mostrarTexto("IOException on cerrarConexion()");
-        } finally {
-            System.exit(0);
-        }
+    public void CerrarDatos() throws IOException {
+        DatosIn.close();
+        DatosOut.close();
+        Socket.close();
     }
 
-    public void cerrarConexion(int a) {
-        try {
-            bufferDeEntrada.close();
-            bufferDeSalida.close();
-            socket.close();
-            mostrarTexto("Conexión terminada");
-        } catch (IOException e) {
-            mostrarTexto("IOException on cerrarConexion()");
-        } finally {
-        }
+    public void CerrarDatos(int a) throws IOException {
+        DatosIn.close();
+        DatosOut.close();
+        Socket.close();
     }
 
     public void ejecutarConexion(String ip, int puerto) {
@@ -123,13 +97,17 @@ public class Cliente {
             public void run() {
                 try {
                     IniciarCliente(ip, puerto);
-                    abrirFlujos();
-                    enviar("///nick///:" + username);
-                    recibirDatos();
+                    AbrirDatos();
+                    EnviarDatos("///nick///:" + Usuario);
+                    RecibirDatos();
                 } catch (IOException ex) {
                     Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
-                    cerrarConexion();
+                    try {
+                        Cliente.this.CerrarDatos();
+                    } catch (IOException ex) {
+                        System.exit(0);
+                    }
                 }
             }
         });
@@ -137,50 +115,39 @@ public class Cliente {
 
     }
 
-    public String recibirDatos() {
+    public String RecibirDatos() {
         String st = "";
         try {
             do {
-                st = (String) bufferDeEntrada.readUTF();
+                st = (String) DatosIn.readUTF();
                 if (st != "") {
                     if (st.equals("salir()")) {
-                        cerrarConexion();
+                        CerrarDatos();
                         return null;
                     } else if (st.contains("[Rec]")) {
                         return st;
                     } else {
-                        mostrarTexto("\n[Servidor] => " + st);
-                        System.out.print("[" + username + "] => ");
+                        Consola("\n[Servidor] => " + st);
+                        System.out.print("[" + Usuario + "] => ");
                         return "\n[Servidor] => " + st;
                     }
                 } else {
                     return "";
                 }
-            } while (!st.equals(COMANDO_TERMINACION));
+            } while (!st.equals(Salir));
         } catch (IOException e) {
             return null;
         }
     }
 
-    public String recibirCredenciales() throws IOException, Exception {
-        Cifrador n=new Cifrador();
+    public String Credenciales() throws IOException, Exception {
+        Cifrador n = new Cifrador();
         String st = "";
-        st = (String) bufferDeEntrada.readUTF();
-        System.out.println("st "+st);
-        String[] aux=st.split(":");
-        System.out.println(n.desencriptar(aux[0])+n.desencriptar(aux[1]));
-        return n.desencriptar(aux[0])+":"+n.desencriptar(aux[1]);
-    }
-
-    public void escribirDatos() {
-        String entrada = "";
-        while (true) {
-            System.out.print("[" + username + "] => ");
-            entrada = teclado.nextLine();
-            if (entrada.length() > 0) {
-                enviar(entrada);
-            }
-        }
+        st = (String) DatosIn.readUTF();
+        System.out.println("st " + st);
+        String[] aux = st.split(":");
+        System.out.println(n.desencriptar(aux[0]) + n.desencriptar(aux[1]));
+        return n.desencriptar(aux[0]) + ":" + n.desencriptar(aux[1]);
     }
 
 }

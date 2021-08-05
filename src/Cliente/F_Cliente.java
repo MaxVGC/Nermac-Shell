@@ -5,7 +5,6 @@
  */
 package Cliente;
 
-import static Cliente.Cliente.username;
 import Frames.Alerta;
 import Main.Fuentes;
 import java.awt.Color;
@@ -22,6 +21,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+import static Cliente.Cliente.Usuario;
 
 /**
  *
@@ -54,7 +54,6 @@ public class F_Cliente extends javax.swing.JFrame {
         jLabel5.setIcon(new ImageIcon("src/Img/Ren_icon.png"));
 
         ejecutarConexion(ip, port);
-        c.escribirDatos();
     }
     int aux = 0;
 
@@ -155,11 +154,11 @@ public class F_Cliente extends javax.swing.JFrame {
             public void run() {
                 try {
                     c.IniciarCliente(ip, puerto);
-                    c.abrirFlujos();
-                    c.enviar("///nick///:" + username);
+                    c.AbrirDatos();
+                    c.EnviarDatos("///nick///:" + Usuario);
                     Ordenar("Conexión establecida con el servidor");
                     while (true) {
-                        Ordenar(c.recibirDatos());
+                        Ordenar(c.RecibirDatos());
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(F_Cliente.class.getName()).log(Level.SEVERE, null, ex);
@@ -293,11 +292,19 @@ public class F_Cliente extends javax.swing.JFrame {
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (jTextField1.getText().equals("salir()")) {
-                c.enviar(jTextField1.getText());
+                try {
+                    c.EnviarDatos(jTextField1.getText());
+                } catch (IOException ex) {
+                    Logger.getLogger(F_Cliente.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 System.exit(0);
             } else {
                 jTextPane1.setText(jTextPane1.getText() + "\n[" + System.getProperty("user.name") + "] => " + jTextField1.getText());
-                c.enviar(jTextField1.getText());
+                try {
+                    c.EnviarDatos(jTextField1.getText());
+                } catch (IOException ex) {
+                    Logger.getLogger(F_Cliente.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 jTextField1.setText("");
                 jLabel2.setIcon(new ImageIcon("src/Img/Barra.gif"));
             }

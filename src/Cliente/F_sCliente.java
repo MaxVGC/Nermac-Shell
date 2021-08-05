@@ -5,10 +5,7 @@ package Cliente;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import Cliente.Cliente;
 import Frames.Alerta;
-import Servidor.F_Servidor;
-import Servidor.F_sServidor;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -208,7 +205,11 @@ public class F_sCliente extends javax.swing.JFrame implements Runnable {
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         this.dispose();
-        c.cerrarConexion();        // TODO add your handling code here:
+        try {
+            c.CerrarDatos();        // TODO add your handling code here:
+        } catch (IOException ex) {
+           System.exit(0);
+        }
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jTextFieldRound2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldRound2MouseClicked
