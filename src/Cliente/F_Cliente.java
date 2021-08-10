@@ -17,11 +17,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import static Cliente.Cliente.Usuario;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.SimpleAttributeSet;
 
 /**
  *
@@ -31,6 +33,7 @@ public class F_Cliente extends javax.swing.JFrame {
 
     Cliente c = new Cliente();
     Font FP;
+    int aux = 0;
 
     /**
      * Creates new form F_Cliente
@@ -52,10 +55,8 @@ public class F_Cliente extends javax.swing.JFrame {
         jLabel2.setIcon(new ImageIcon("src/Img/Barra.gif"));
         jLabel3.setIcon(new ImageIcon("src/Img/Btn_close.png"));
         jLabel5.setIcon(new ImageIcon("src/Img/Ren_icon.png"));
-
         ejecutarConexion(ip, port);
     }
-    int aux = 0;
 
     private int findLastNonWordChar(String text, int index) {
         while (--index >= 0) {
@@ -81,14 +82,15 @@ public class F_Cliente extends javax.swing.JFrame {
             String rec = a.substring(5, a.length());
             String[] aux = rec.split(":");
             cpu.setText(aux[0]);
+            cpubar.setValue(Integer.parseInt(aux[0].replace("%", "")));
             hdd.setText(aux[1]);
+            hddbar.setValue(Integer.parseInt(aux[1].replace("%", "")));
             ram.setText(aux[2]);
-
+            rambar.setValue(Integer.parseInt(aux[2].replace("%", "")));
         } else if (aux == 1) {
             Thread.sleep(5000);
             System.exit(0);
         } else if (a != null && aux == 0) {
-
             jLabel5.setIcon(new ImageIcon("src/Img/Ren_icon.png"));
             String g = jTextPane1.getText();
             final StyleContext cont = StyleContext.getDefaultStyleContext();
@@ -160,10 +162,8 @@ public class F_Cliente extends javax.swing.JFrame {
                     while (true) {
                         Ordenar(c.RecibirDatos());
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(F_Cliente.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(F_Cliente.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    System.out.println(ex);
                 } finally {
                     //cerrarConexion();
                 }
@@ -193,6 +193,9 @@ public class F_Cliente extends javax.swing.JFrame {
         hdd_icon = new javax.swing.JLabel();
         ram_icon = new javax.swing.JLabel();
         cpu_icon = new javax.swing.JLabel();
+        hddbar = new rojerusan.componentes.RSProgressCircleAnimated();
+        rambar = new rojerusan.componentes.RSProgressCircleAnimated();
+        cpubar = new rojerusan.componentes.RSProgressCircleAnimated();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -279,6 +282,30 @@ public class F_Cliente extends javax.swing.JFrame {
         cpu_icon.setForeground(new java.awt.Color(255, 255, 255));
         getContentPane().add(cpu_icon);
         cpu_icon.setBounds(1160, 140, 110, 110);
+
+        hddbar.setForeground(new java.awt.Color(255, 255, 255));
+        hddbar.setValue(50);
+        hddbar.setAnimated(false);
+        hddbar.setString("");
+        hddbar.setStringPainted(false);
+        getContentPane().add(hddbar);
+        hddbar.setBounds(1160, 420, 110, 110);
+
+        rambar.setForeground(new java.awt.Color(255, 255, 255));
+        rambar.setValue(50);
+        rambar.setAnimated(false);
+        rambar.setString("");
+        rambar.setStringPainted(false);
+        getContentPane().add(rambar);
+        rambar.setBounds(1160, 280, 110, 110);
+
+        cpubar.setForeground(new java.awt.Color(255, 255, 255));
+        cpubar.setValue(50);
+        cpubar.setAnimated(false);
+        cpubar.setString("");
+        cpubar.setStringPainted(false);
+        getContentPane().add(cpubar);
+        cpubar.setBounds(1160, 140, 110, 110);
         getContentPane().add(jLabel5);
         jLabel5.setBounds(1210, 60, 71, 50);
         getContentPane().add(jLabel2);
@@ -327,8 +354,10 @@ public class F_Cliente extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JLabel cpu;
     private javax.swing.JLabel cpu_icon;
+    private rojerusan.componentes.RSProgressCircleAnimated cpubar;
     private static javax.swing.JLabel hdd;
     private javax.swing.JLabel hdd_icon;
+    private rojerusan.componentes.RSProgressCircleAnimated hddbar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -339,5 +368,6 @@ public class F_Cliente extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPane1;
     private static javax.swing.JLabel ram;
     private javax.swing.JLabel ram_icon;
+    private rojerusan.componentes.RSProgressCircleAnimated rambar;
     // End of variables declaration//GEN-END:variables
 }

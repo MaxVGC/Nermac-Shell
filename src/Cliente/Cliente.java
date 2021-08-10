@@ -29,12 +29,14 @@ public class Cliente {
 
     public Boolean isConnected(String ip, int puerto, String cred) throws IOException, InterruptedException {
         try {
+            Cifrador n=new Cifrador();
+            String[] aux=cred.split(":");
             System.out.println(ip + puerto);
             Socket = new Socket(ip, puerto);
             Socket.setSoTimeout(10 * 1000);
             if (Socket.isConnected()) {
                 AbrirDatos();
-                if (Credenciales().equals(cred)) {
+                if (Credenciales().equals(n.hash(aux[0])+":"+n.hash(aux[1]))) {
                     System.out.println("entre");
                     EnviarDatos("ready");
                     CerrarDatos(0);
@@ -141,13 +143,10 @@ public class Cliente {
     }
 
     public String Credenciales() throws IOException, Exception {
-        Cifrador n = new Cifrador();
         String st = "";
         st = (String) DatosIn.readUTF();
-        System.out.println("st " + st);
         String[] aux = st.split(":");
-        System.out.println(n.desencriptar(aux[0]) + n.desencriptar(aux[1]));
-        return n.desencriptar(aux[0]) + ":" + n.desencriptar(aux[1]);
+        return aux[0] + ":" + aux[1];
     }
 
 }

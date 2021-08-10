@@ -18,10 +18,6 @@ public class Sistem {
     int mb = 1024 * 1024;
     int gb = 1024 * 1024 * 1024;
 
-    public static void log(Object message) {
-//        System.out.println(message);
-    }
-
     static boolean isPrime(int n) {
         if (n <= 2) {
             return n == 2;
@@ -42,7 +38,6 @@ public class Sistem {
         long totalAvailCPUTime = cpuCount * (end - elapsedStartTime);
         long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() - cpuStartTime;
         float per = ((float) totalUsedCPUTime * 100) / (float) totalAvailCPUTime;
-        log(per);
         return (int) per;
     }
 
@@ -55,8 +50,6 @@ public class Sistem {
 
     public String Disk() {
         File diskPartition = new File("C:");
-        
-//       
         return (100 - (((diskPartition.getFreeSpace() / gb) * 100) / (diskPartition.getTotalSpace() / gb))) + "%";
     }
 
@@ -76,7 +69,7 @@ public class Sistem {
             seed++;
 
         }
-        float cpuPercent = calcCPU(startCPUTime, start, cpuCount);
+        int cpuPercent = calcCPU(startCPUTime, start, cpuCount);
         return cpuPercent + "%";
     }
 }

@@ -88,6 +88,7 @@ public class F_Servidor extends javax.swing.JFrame {
                         s.EnviarDatos("[Rec]" + cp.Cpu() + ":" + cp.Disk() + ":" + cp.Ram()+":");
                     } catch (InterruptedException ex) {
                         Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                        System.exit(0);
                     } catch (IOException ex) {
                         Logger.getLogger(F_Servidor.class.getName()).log(Level.SEVERE, null, ex);
                     }

@@ -32,14 +32,14 @@ public class Servidor {
         if (Socket.isConnected()) {
             AbrirDatos();
             Cifrador n = new Cifrador();
-            EnviarDatos(n.encriptar(user)+":" + n.encriptar(pass));
+            EnviarDatos(n.hash(user) + ":" + n.hash(pass));
             if (RecibirConfirmacion().equals("ready")) {
-                Servidor.this.CerrarDatos(0);
+                Servidor.this.CerrarDatos();
                 Socket.close();
                 SSocket.close();
                 return true;
             } else {
-                Servidor.this.CerrarDatos(0);
+                Servidor.this.CerrarDatos();
                 Socket.close();
                 SSocket.close();
                 return false;
@@ -122,24 +122,18 @@ public class Servidor {
     }
 
     public void EnviarDatos(String s) throws IOException {
-            DatosOut.writeUTF(s);
-            DatosOut.flush();
+        DatosOut.writeUTF(s);
+        DatosOut.flush();
     }
 
     public static void Consola(String s) {
         System.out.print(s);
     }
 
-    public void CerrarDatos(int a) throws IOException {
-            DatosIn.close();
-            DatosOut.close();
-            Socket.close();
-    }
-
     public void CerrarDatos() throws IOException {
-            DatosIn.close();
-            DatosOut.close();
-            Socket.close();
+        DatosIn.close();
+        DatosOut.close();
+        Socket.close();
     }
 
     public void Iniciar(int puerto) {

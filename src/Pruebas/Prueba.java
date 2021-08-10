@@ -5,34 +5,36 @@
  */
 package Pruebas;
 
-import com.jcraft.jsch.JSchException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
+import java.security.MessageDigest;
 
 public class Prueba {
 
-    public static void main(String[] args) throws Exception {
-        // Aqui obtenemos la ip local de la maquina
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
-        while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
-                System.out.println(i.getHostAddress());
-            }
-        }
-        Enumeration x = NetworkInterface.getNetworkInterfaces();
-        NetworkInterface n = (NetworkInterface) x.nextElement();
-        Enumeration ee = n.getInetAddresses();
-        InetAddress i = (InetAddress) ee.nextElement();
-        System.out.println(i.getHostAddress());
+    public Prueba() {
+        
+    }
+
+    static public String hash(String clear) throws Exception { 
+        MessageDigest md = MessageDigest.getInstance("SHA-256"); 
+        md.reset();
+        byte[] b = md.digest(clear.getBytes()); 
+        
+        int size = b.length;
+        StringBuffer h = new StringBuffer(size); 
+        for (int i = 0; i < size; i++) { 
+            int u = b[i]&255; // unsigned conversion 
+            if (u<16) { 
+                h.append("0"+Integer.toHexString(u)); 
+            } else { 
+                h.append(Integer.toHexString(u)); 
+            } 
+        } 
+        return h.toString(); 
+    } 
+    
+    public static void main(String[] args) throws IOException, Exception {
+        String a="15%";
+        int iTest = Integer.parseInt(a.replace("%", ""));   
+        System.out.println(iTest);
     }
 }
