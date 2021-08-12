@@ -118,34 +118,33 @@ public class Cliente {
     }
 
     public String RecibirDatos() {
-        String st = "";
+        String in = "";
         try {
             do {
-                st = (String) DatosIn.readUTF();
-                if (st != "") {
-                    if (st.equals("salir()")) {
+                in = (String) DatosIn.readUTF();
+                if (in != "") {
+                    if (in.equals("salir()")) {
                         CerrarDatos();
                         return null;
-                    } else if (st.contains("[Rec]")) {
-                        return st;
+                    } else if (in.contains("[Rec]")) {
+                        return in;
                     } else {
-                        Consola("\n[Servidor] => " + st);
+                        Consola("\n[Servidor] => " + in);
                         System.out.print("[" + Usuario + "] => ");
-                        return "\n[Servidor] => " + st;
+                        return "\n[Servidor] => " + in;
                     }
                 } else {
                     return "";
                 }
-            } while (!st.equals(Salir));
+            } while (!in.equals(Salir));
         } catch (IOException e) {
             return null;
         }
     }
 
     public String Credenciales() throws IOException, Exception {
-        String st = "";
-        st = (String) DatosIn.readUTF();
-        String[] aux = st.split(":");
+        String in = DatosIn.readUTF();
+        String[] aux = in.split(":");
         return aux[0] + ":" + aux[1];
     }
 

@@ -64,10 +64,9 @@ public class Servidor {
     }
 
     public String RecibirConfirmacion() throws IOException {
-        String st = "";
-        st = (String) DatosIn.readUTF();
-        System.out.println(st);
-        return st;
+        String in = DatosIn.readUTF();
+        System.out.println(in);
+        return in;
     }
 
     public String Cmd(String command) throws IOException {

@@ -7,7 +7,6 @@ package Cliente;
 
 import Frames.Alerta;
 import Main.Fuentes;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -16,14 +15,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import static Cliente.Cliente.Usuario;
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.SimpleAttributeSet;
 
 /**
  *
@@ -58,25 +50,6 @@ public class F_Cliente extends javax.swing.JFrame {
         ejecutarConexion(ip, port);
     }
 
-    private int findLastNonWordChar(String text, int index) {
-        while (--index >= 0) {
-            if (String.valueOf(text.charAt(index)).matches("\\W")) {
-                break;
-            }
-        }
-        return index;
-    }
-
-    private int findFirstNonWordChar(String text, int index) {
-        while (index < text.length()) {
-            if (String.valueOf(text.charAt(index)).matches("\\W")) {
-                break;
-            }
-            index++;
-        }
-        return index;
-    }
-
     public void Ordenar(String a) throws InterruptedException {
         if (a.substring(0, 5).equals("[Rec]")) {
             String rec = a.substring(5, a.length());
@@ -93,54 +66,6 @@ public class F_Cliente extends javax.swing.JFrame {
         } else if (a != null && aux == 0) {
             jLabel5.setIcon(new ImageIcon("src/Img/Ren_icon.png"));
             String g = jTextPane1.getText();
-            final StyleContext cont = StyleContext.getDefaultStyleContext();
-            final AttributeSet attrRed = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.RED);
-            final AttributeSet attrBlack = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.WHITE);
-            final AttributeSet attrBlue = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLUE);
-            DefaultStyledDocument doc = new DefaultStyledDocument() {
-                public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
-                    super.insertString(offset, str, a);
-                    String text = getText(0, getLength());
-                    int before = findLastNonWordChar(text, offset);
-                    if (before < 0) {
-                        before = 0;
-                    }
-                    int after = findFirstNonWordChar(text, offset + str.length());
-                    int wordL = before;
-                    int wordR = before;
-                    while (wordR <= after) {
-                        if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
-                            if (text.substring(wordL, wordR).matches("(\\W)*(Servidor)")) {
-                                setCharacterAttributes(wordL + 1, wordR - wordL, attrRed, false);
-                            } else if (text.substring(wordL, wordR).matches("(\\W)*(" + System.getProperty("user.name") + ")")) {
-                                setCharacterAttributes(wordL + 1, wordR - wordL, attrBlue, false);
-                            } else {
-                                setCharacterAttributes(wordL, wordR - wordL, attrBlack, false);
-                            }
-                            wordL = wordR;
-                        }
-                        wordR++;
-                    }
-                }
-
-                public void remove(int offs, int len) throws BadLocationException {
-                    super.remove(offs, len);
-                    String text = getText(0, getLength());
-                    int before = findLastNonWordChar(text, offs);
-                    if (before < 0) {
-                        before = 0;
-                    }
-                    int after = findFirstNonWordChar(text, offs);
-                    if (text.substring(before, after).matches("(\\W)*(Servidor|ahh)")) {
-                        setCharacterAttributes(before, after - before, attrRed, false);
-                    } else if (text.substring(before, after).matches("(\\W)*(" + System.getProperty("user.name") + "|ahh)")) {
-                        setCharacterAttributes(before, after - before, attrBlue, false);
-                    } else {
-                        setCharacterAttributes(before, after - before, attrBlack, false);
-                    }
-                }
-            };
-            jTextPane1.setDocument(doc);
             jTextPane1.setText(g + a);
         } else {
             aux = 1;
@@ -163,9 +88,9 @@ public class F_Cliente extends javax.swing.JFrame {
                         Ordenar(c.RecibirDatos());
                     }
                 } catch (Exception ex) {
-                    System.out.println(ex);
+                    System.out.println(ex.fillInStackTrace());
                 } finally {
-                    //cerrarConexion();
+                    System.exit(0);
                 }
             }
         });
@@ -184,15 +109,15 @@ public class F_Cliente extends javax.swing.JFrame {
 
         jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jTextField1 = new javax.swing.JTextField();
         hdd = new javax.swing.JLabel();
         ram = new javax.swing.JLabel();
         cpu = new javax.swing.JLabel();
         hdd_icon = new javax.swing.JLabel();
         ram_icon = new javax.swing.JLabel();
         cpu_icon = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
+        jTextField1 = new javax.swing.JTextField();
         hddbar = new rojerusan.componentes.RSProgressCircleAnimated();
         rambar = new rojerusan.componentes.RSProgressCircleAnimated();
         cpubar = new rojerusan.componentes.RSProgressCircleAnimated();
@@ -218,34 +143,6 @@ public class F_Cliente extends javax.swing.JFrame {
         });
         getContentPane().add(jLabel3);
         jLabel3.setBounds(1250, 4, 26, 26);
-
-        jScrollPane1.setBackground(new java.awt.Color(55, 33, 52));
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setOpaque(false);
-
-        jTextPane1.setEditable(false);
-        jTextPane1.setBackground(new java.awt.Color(55, 33, 52));
-        jTextPane1.setBorder(null);
-        jTextPane1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextPane1.setOpaque(false);
-        jScrollPane1.setViewportView(jTextPane1);
-
-        getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(5, 40, 1270, 630);
-
-        jTextField1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setBorder(null);
-        jTextField1.setCaretColor(new java.awt.Color(255, 255, 255));
-        jTextField1.setOpaque(false);
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTextField1KeyPressed(evt);
-            }
-        });
-        getContentPane().add(jTextField1);
-        jTextField1.setBounds(45, 685, 1230, 30);
 
         hdd.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         hdd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -282,6 +179,34 @@ public class F_Cliente extends javax.swing.JFrame {
         cpu_icon.setForeground(new java.awt.Color(255, 255, 255));
         getContentPane().add(cpu_icon);
         cpu_icon.setBounds(1160, 140, 110, 110);
+
+        jScrollPane1.setBackground(new java.awt.Color(55, 33, 52));
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setOpaque(false);
+
+        jTextPane1.setEditable(false);
+        jTextPane1.setBackground(new java.awt.Color(55, 33, 52));
+        jTextPane1.setBorder(null);
+        jTextPane1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextPane1.setOpaque(false);
+        jScrollPane1.setViewportView(jTextPane1);
+
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(5, 40, 1270, 630);
+
+        jTextField1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField1.setBorder(null);
+        jTextField1.setCaretColor(new java.awt.Color(255, 255, 255));
+        jTextField1.setOpaque(false);
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
+        getContentPane().add(jTextField1);
+        jTextField1.setBounds(45, 685, 1230, 30);
 
         hddbar.setForeground(new java.awt.Color(255, 255, 255));
         hddbar.setValue(50);
